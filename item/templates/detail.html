@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{%block title %}{{item.name}}{%endblock%}
+{% block content %}
+
+<div class="container mx-auto my-10">
+    <div class="grid grid-cols-2">
+        <div class="image flex justify-center">
+            <img class="rounded-t-lg" width="70%" height="50%" src='{{item.image.url}}' alt='{{item.name}}' />
+        </div>
+        <div class="details bg-gray-100 p-5 rounded">
+            <h1 class="font-bold text-xl">{{item.name}}</h1>
+            <br>
+            <p> <span class="font-semibold text-md">Price:</span> {{item.price}}</p>
+            <p>Seller: {{item.created_by|capfirst}}</p>
+            {% if item.description %}
+            <div class="text-md">
+                <span class="font-semibold">Description:</span><br>
+                <p>{{item.description}}</p>
+            </div>
+            {% endif %}
+            <br>
+            <br>
+            {% if request.user == item.created_by %}
+            
+            <div> 
+                <a href={% url 'item:edit_item' item.id %} class="px-6 py-2 text-md font-semibold bg-blue-500 text-white rounded-xl hover:bg-blue-700">Edit Item</a>
+                <a href={%url 'item:delete_item' item.id %} class="px-6 py-2 text-md font-semibold bg-red-500 text-white rounded-xl hover:bg-red-700">Delete Item</a>
+            </div>
+            {% else %}
+            <div> 
+                <a href={% url 'conversation:new' item.id%} class="px-6 py-2 text-md font-semibold bg-teal-500 text-white rounded-xl hover:bg-teal-700">Contact Seller</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% comment %} All RElated Products {% endcomment %}
+<div class="heading">
+    <h1 class="text-center text-blue-500 text-lg">Related Products</h1>
+</div>
+<div class="products grid grid-cols-4 mx-8 gap-2 my-4">
+    {% for ritem in related_items %}
+    <div>
+        <a href={% url 'item:detail' ritem.id %}>
+            <div>
+                <img width="50%" height="100%" src="{{ritem.image.url}}" alt='{{ritem.name}}' class="rounded-t-xl" />
+            </div>
+            <div class="p-6 bg-white rounded-b-xl">
+                <h1 class="text-md font-bold">{{ritem.name}}</h1>
+                <p class="text-gray-500 mt-2">Price: {{ritem.price}}</p>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+</div>
+{% endblock  %}
